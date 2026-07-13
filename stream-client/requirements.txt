@@ -1,0 +1,16 @@
+# Shah-Stream runtime dependencies
+# Install with: pip install -r requirements.txt
+#
+# NOTE: python-vlc is only a thin ctypes binding to libVLC. You MUST also install
+# the VLC desktop application (https://www.videolan.org/vlc/) so that the native
+# libVLC shared library is present on your system. See README.md for details.
+
+# GUI framework (PyQt6 ONLY -- never PySide). Provides QtWidgets, QtCore, QtGui,
+# QtWebSockets and QtNetwork used throughout the app.
+PyQt6>=6.6.0
+
+# libVLC Python bindings for media playback (requires the VLC desktop app / libVLC).
+python-vlc>=3.0.20000
+
+# Loads configuration from a .env file into environment variables (see .env.example).
+python-dotenv>=1.0.0
