@@ -1,0 +1,20 @@
+# Keep the build context tiny — the image needs only server.py + requirements-server.txt.
+# Exclude the PyQt client, tests, tooling and caches.
+src/
+tests/
+main.py
+run.py
+requirements.txt
+.env
+.env.example
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.git/
+.gitignore
+.idea/
+.vscode/
+README.md
+logs/
