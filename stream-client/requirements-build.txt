@@ -1,0 +1,4 @@
+# Build-time tooling for producing the Windows executable (see BUILD.md).
+# Install alongside the app's runtime deps: pip install -r requirements.txt -r requirements-build.txt
+pyinstaller>=6.0
+pillow>=10.0        # only needed to (re)generate the .ico via tools/make_icon.py
