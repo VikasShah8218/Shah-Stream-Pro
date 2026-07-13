@@ -1,0 +1,4 @@
+# Shah-Stream sync server dependencies (server-only — separate from the PyQt client).
+# Pinned for reproducible builds. uvicorn[standard] pulls in websockets + uvloop + httptools.
+fastapi==0.115.9
+uvicorn[standard]==0.34.3
