@@ -1,0 +1,39 @@
+# Shah-Stream sync server — production compose.
+# Single service, fixed port 8765, bound to all interfaces. No env / no config.
+#
+#   docker compose up -d --build      # start (build image, run detached)
+#   docker compose logs -f            # watch sync traffic
+#   docker compose down               # stop
+
+services:
+  sync-server:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: shah-stream-sync-server:1.0.0
+    container_name: shah-stream-sync-server
+    restart: unless-stopped
+    ports:
+      - "8765:8765"          # host:container — clients connect to ws://<host>:8765
+    healthcheck:
+      test: ["CMD", "python", "-c", "import urllib.request,sys; sys.exit(0 if urllib.request.urlopen('http://127.0.0.1:8765/health', timeout=3).status == 200 else 1)"]
+      interval: 30s
+      timeout: 5s
+      start_period: 5s
+      retries: 3
+    stop_grace_period: 10s   # let in-flight WebSocket closes finish cleanly
+    deploy:
+      resources:
+        limits:
+          cpus: "1.0"
+          memory: 256M
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+
+
+# docker tag shah-stream-sync-server:1.0.0 mrshah8218/shah-stream-sync-server:latest
+# docker push mrshah8218/shah-stream-sync-server:latest
