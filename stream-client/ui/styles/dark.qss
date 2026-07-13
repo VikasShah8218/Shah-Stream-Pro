@@ -1,0 +1,404 @@
+/*
+ * Shah-Stream — "Cinema" dark theme.
+ *
+ * Near-black surfaces, monochrome controls, and a single confident accent —
+ * a muted gold — spent only on the play action, the timeline progress, focus
+ * rings and selection. Everything else stays quiet so the gold reads as intent.
+ * Designed to sit behind the black-and-white Shah portrait mark.
+ *
+ * Palette
+ *   ink        #0C0C0F   window base
+ *   panel      #101015   control bar / menu / status
+ *   surface    #1C1C22   buttons, combo, raised
+ *   surface-hi #24242C   hover / grooves
+ *   line       #2C2C35   borders, dividers
+ *   text       #ECECEF   primary
+ *   text-dim   #888D97   secondary
+ *   gold       #E6B450   accent   (hover #F2C86B / press #C99A34)
+ */
+
+QWidget {
+    background-color: #0C0C0F;
+    color: #ECECEF;
+    font-family: "Segoe UI", "Inter", "Noto Sans", sans-serif;
+    font-size: 13px;
+}
+
+QMainWindow,
+QDialog {
+    background-color: #0C0C0F;
+}
+
+/* ------------------------------------------------------------- Menu bar --- */
+QMenuBar {
+    background-color: #101015;
+    color: #C7CAD1;
+    border-bottom: 1px solid #22222A;
+    padding: 3px 6px;
+}
+
+QMenuBar::item {
+    background: transparent;
+    padding: 5px 12px;
+    border-radius: 6px;
+}
+
+QMenuBar::item:selected {
+    background-color: #1F1F27;
+    color: #ECECEF;
+}
+
+QMenuBar::item:pressed {
+    background-color: #24242C;
+    color: #E6B450;
+}
+
+QMenu {
+    background-color: #16161C;
+    color: #ECECEF;
+    border: 1px solid #2C2C35;
+    padding: 6px;
+}
+
+QMenu::item {
+    padding: 7px 28px 7px 22px;
+    border-radius: 6px;
+}
+
+QMenu::item:selected {
+    background-color: #24242C;
+    color: #E6B450;
+}
+
+QMenu::item:disabled {
+    color: #5C616B;
+}
+
+QMenu::separator {
+    height: 1px;
+    background: #2C2C35;
+    margin: 6px 10px;
+}
+
+/* ------------------------------------------------------------ Status bar --- */
+QStatusBar {
+    background-color: #101015;
+    color: #888D97;
+    border-top: 1px solid #22222A;
+}
+
+QStatusBar::item {
+    border: none;
+}
+
+QStatusBar QLabel,
+QLabel#connLabel {
+    color: #888D97;
+    padding: 0 8px;
+}
+
+/* --------------------------------------------------------------- Buttons --- */
+QPushButton {
+    background-color: #1C1C22;
+    color: #ECECEF;
+    border: 1px solid #2C2C35;
+    border-radius: 8px;
+    padding: 7px 14px;
+}
+
+QPushButton:hover {
+    background-color: #24242C;
+    border-color: #3A3A45;
+}
+
+QPushButton:pressed {
+    background-color: #14141A;
+}
+
+QPushButton:disabled {
+    background-color: #141418;
+    color: #565B64;
+    border-color: #22222A;
+}
+
+QPushButton:focus {
+    outline: none;
+    border-color: #E6B450;
+}
+
+/* Transport controls: flat, monochrome. Button sizes are fixed in code. */
+QPushButton#controlButton {
+    background-color: transparent;
+    border: 1px solid transparent;
+    border-radius: 8px;
+    padding: 0;
+}
+
+QPushButton#controlButton:hover {
+    background-color: #1F1F27;
+}
+
+QPushButton#controlButton:pressed {
+    background-color: #17171C;
+}
+
+/* Signature: the play/pause action is a solid gold disc (38px fixed -> r19). */
+QPushButton#playButton {
+    background-color: #E6B450;
+    border: none;
+    border-radius: 19px;
+    padding: 0;
+}
+
+QPushButton#playButton:hover {
+    background-color: #F2C86B;
+}
+
+QPushButton#playButton:pressed {
+    background-color: #C99A34;
+}
+
+/* ----------------------------------------------------------- Time labels --- */
+QLabel {
+    color: #ECECEF;
+    background: transparent;
+}
+
+QLabel#timeLabel {
+    color: #C7CAD1;
+    font-family: "Cascadia Mono", "Consolas", monospace;
+    font-size: 12px;
+    padding: 0 3px;
+}
+
+QLabel#timeSep {
+    color: #565B64;
+}
+
+/* --------------------------------------------------------------- Sliders --- */
+QSlider {
+    background: transparent;
+}
+
+QSlider::groove:horizontal {
+    height: 5px;
+    background: #24242C;
+    border-radius: 3px;
+}
+
+QSlider::sub-page:horizontal {
+    background: #E6B450;
+    border-radius: 3px;
+}
+
+QSlider::add-page:horizontal {
+    background: #24242C;
+    border-radius: 3px;
+}
+
+QSlider::handle:horizontal {
+    background: #ECECEF;
+    width: 14px;
+    height: 14px;
+    margin: -5px 0;
+    border-radius: 7px;
+    border: none;
+}
+
+QSlider::handle:horizontal:hover {
+    background: #FFFFFF;
+}
+
+QSlider::handle:horizontal:pressed {
+    background: #E6B450;
+}
+
+/* Volume slider — thinner and understated (no gold). */
+QSlider#volumeSlider::groove:horizontal {
+    height: 4px;
+}
+
+QSlider#volumeSlider::sub-page:horizontal {
+    background: #7A7F89;
+}
+
+QSlider#volumeSlider::handle:horizontal {
+    background: #C7CAD1;
+    width: 12px;
+    height: 12px;
+    margin: -4px 0;
+    border-radius: 6px;
+}
+
+QSlider#volumeSlider::handle:horizontal:hover {
+    background: #ECECEF;
+}
+
+/* -------------------------------------------------------------- Combobox --- */
+QComboBox {
+    background-color: #1C1C22;
+    color: #ECECEF;
+    border: 1px solid #2C2C35;
+    border-radius: 8px;
+    padding: 5px 8px;
+    min-width: 58px;
+}
+
+QComboBox:hover {
+    border-color: #3A3A45;
+}
+
+QComboBox:focus,
+QComboBox:on {
+    border-color: #E6B450;
+}
+
+QComboBox::drop-down {
+    subcontrol-origin: padding;
+    subcontrol-position: center right;
+    width: 20px;
+    border: none;
+}
+
+QComboBox::down-arrow {
+    image: none;
+    width: 0;
+    height: 0;
+    border-left: 4px solid transparent;
+    border-right: 4px solid transparent;
+    border-top: 5px solid #888D97;
+    margin-right: 8px;
+}
+
+QComboBox QAbstractItemView {
+    background-color: #16161C;
+    color: #ECECEF;
+    border: 1px solid #2C2C35;
+    border-radius: 8px;
+    padding: 4px;
+    selection-background-color: #24242C;
+    selection-color: #E6B450;
+    outline: none;
+}
+
+/* --------------------------------------------------------------- Inputs --- */
+QLineEdit {
+    background-color: #14141A;
+    color: #ECECEF;
+    border: 1px solid #2C2C35;
+    border-radius: 8px;
+    padding: 8px 10px;
+    selection-background-color: #E6B450;
+    selection-color: #0C0C0F;
+}
+
+QLineEdit:focus {
+    border-color: #E6B450;
+}
+
+QLineEdit:disabled {
+    color: #565B64;
+    background-color: #121217;
+}
+
+/* ----------------------------------------------------- Control bar shell --- */
+QWidget#controlBar {
+    background-color: #101015;
+    border-top: 1px solid #22222A;
+}
+
+/* ------------------------------------------------------- Dialog buttons --- */
+QDialogButtonBox QPushButton {
+    min-width: 92px;
+}
+
+/* -------------------------------------------------- Connect dialog brand --- */
+QLabel#dialogLogo {
+    background: #FFFFFF;
+    border-radius: 12px;
+}
+
+QLabel#dialogTitle {
+    font-size: 17px;
+    font-weight: 600;
+    color: #ECECEF;
+}
+
+QLabel#dialogSubtitle {
+    color: #888D97;
+    font-size: 12px;
+}
+
+/* ---------------------------------------------------------- About dialog --- */
+QLabel#aboutLogo {
+    background: #FFFFFF;
+    border-radius: 18px;
+}
+
+QLabel#aboutTitle {
+    font-size: 22px;
+    font-weight: 600;
+    color: #ECECEF;
+}
+
+QLabel#aboutTagline {
+    color: #E6B450;
+    font-size: 13px;
+}
+
+QLabel#aboutMeta {
+    color: #888D97;
+    font-size: 12px;
+}
+
+/* -------------------------------------------------------------- Tooltip --- */
+QToolTip {
+    background-color: #16161C;
+    color: #ECECEF;
+    border: 1px solid #2C2C35;
+    padding: 5px 8px;
+    border-radius: 6px;
+}
+
+/* ------------------------------------------------------------ Scrollbars --- */
+QScrollBar:vertical {
+    background: transparent;
+    width: 11px;
+    margin: 0;
+}
+
+QScrollBar::handle:vertical {
+    background: #2C2C35;
+    min-height: 28px;
+    border-radius: 5px;
+}
+
+QScrollBar::handle:vertical:hover {
+    background: #3A3A45;
+}
+
+QScrollBar::add-line:vertical,
+QScrollBar::sub-line:vertical {
+    height: 0;
+}
+
+QScrollBar:horizontal {
+    background: transparent;
+    height: 11px;
+    margin: 0;
+}
+
+QScrollBar::handle:horizontal {
+    background: #2C2C35;
+    min-width: 28px;
+    border-radius: 5px;
+}
+
+QScrollBar::handle:horizontal:hover {
+    background: #3A3A45;
+}
+
+QScrollBar::add-line:horizontal,
+QScrollBar::sub-line:horizontal {
+    width: 0;
+}
