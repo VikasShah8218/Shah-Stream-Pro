@@ -121,3 +121,19 @@ def mute_icon(color: str) -> QIcon:
 
 def fullscreen_icon(color: str) -> QIcon:
     return _icon(_draw_fullscreen, color)
+
+def _draw_chevron_down(p: QPainter, c: QColor) -> None:
+    p.setBrush(Qt.BrushStyle.NoBrush)
+    p.setPen(_stroke_pen(c))
+    p.drawPolyline(QPolygonF([QPointF(13, 16), QPointF(20, 23), QPointF(27, 16)]))
+
+def _draw_chevron_up(p: QPainter, c: QColor) -> None:
+    p.setBrush(Qt.BrushStyle.NoBrush)
+    p.setPen(_stroke_pen(c))
+    p.drawPolyline(QPolygonF([QPointF(13, 24), QPointF(20, 17), QPointF(27, 24)]))
+
+def chevron_down_icon(color: str) -> QIcon:
+    return _icon(_draw_chevron_down, color)
+
+def chevron_up_icon(color: str) -> QIcon:
+    return _icon(_draw_chevron_up, color)

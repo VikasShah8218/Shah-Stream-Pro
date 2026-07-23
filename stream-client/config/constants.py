@@ -49,7 +49,7 @@ PLAYBACK_RATES: list[float] = [0.25, 0.5, 0.75, 1.0, 1.25, 1.5, 2.0]
 
 # --- Timers / intervals ---------------------------------------------------
 POSITION_POLL_INTERVAL_MS: int = 250
-RECONNECT_INTERVAL_MS: int = 3000
+RECONNECT_INTERVAL_MS: int = 1000
 
 # --- Video aspect ratios (label -> libVLC aspect-ratio string) ------------
 ASPECT_RATIOS: dict[str, str] = {

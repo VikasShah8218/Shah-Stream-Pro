@@ -5,7 +5,7 @@ from __future__ import annotations
 import logging
 import os
 
-from PyQt6.QtCore import Qt
+from PyQt6.QtCore import Qt, QTimer, QPropertyAnimation, QEasingCurve, QEvent, QSize
 from PyQt6.QtGui import (
     QAction,
     QActionGroup,
@@ -20,6 +20,7 @@ from PyQt6.QtWidgets import (
     QMainWindow,
     QVBoxLayout,
     QWidget,
+    QPushButton,
 )
 
 from config.constants import (
@@ -38,6 +39,7 @@ from sync.sync_manager import SyncManager
 from ui.about_dialog import AboutDialog
 from ui.branding import build_app_icon
 from ui.connect_dialog import ConnectDialog
+from ui import icons
 from ui.control_bar import ControlBar
 from ui.video_widget import VideoWidget
 from utils.formatting import ms_to_hhmmss
@@ -91,6 +93,22 @@ class MainWindow(QMainWindow):
         # Status bar with a persistent connection-state indicator.
         self._conn_label = QLabel("Sync: Disconnected")
         self._conn_label.setObjectName("connLabel")
+        
+        self._icon_hide = icons.chevron_down_icon("#C9CDD4")
+        self._icon_show = icons.chevron_up_icon("#C9CDD4")
+        
+        self._toggle_btn = QPushButton()
+        self._toggle_btn.setIcon(self._icon_hide)
+        self._toggle_btn.setIconSize(QSize(20, 20))
+        self._toggle_btn.setObjectName("toggleBtn")
+        self._toggle_btn.setFixedSize(24, 24)
+        self._toggle_btn.setToolTip("Hide Controls")
+        self._toggle_btn.setFocusPolicy(Qt.FocusPolicy.NoFocus)
+        self._toggle_btn.setCursor(Qt.CursorShape.PointingHandCursor)
+        self._toggle_btn.setStyleSheet("QPushButton { border: none; background: transparent; }")
+        self._toggle_btn.clicked.connect(self.toggle_controls)
+        
+        self.statusBar().addPermanentWidget(self._toggle_btn)
         self.statusBar().addPermanentWidget(self._conn_label)
 
         self._build_menus()
@@ -101,6 +119,11 @@ class MainWindow(QMainWindow):
         # Apply the default volume on startup.
         self._controller.set_volume(DEFAULT_VOLUME)
         self._control.set_volume(DEFAULT_VOLUME)
+
+        self._controls_hidden = False
+        self._animation = QPropertyAnimation(self._control, b"maximumHeight")
+        self._animation.setDuration(300)
+        self._animation.setEasingCurve(QEasingCurve.Type.InOutQuad)
 
         logger.info("MainWindow constructed")
 
@@ -244,7 +267,7 @@ class MainWindow(QMainWindow):
             logger.info("Attaching VLC output to window handle %s", handle)
             self._controller.attach_window(handle)
 
-    def keyPressEvent(self, event: QKeyEvent) -> None:  # noqa: N802 (Qt override)
+    def keyPressEvent(self, event: QKeyEvent) -> None:  # noqa: N802
         """Fallback key handling so arrows/space work even without shortcut focus."""
         key = event.key()
         if key == Qt.Key.Key_Space:
@@ -378,6 +401,29 @@ class MainWindow(QMainWindow):
             self.menuBar().hide()
             self._fullscreen = True
         logger.debug("Fullscreen -> %s", self._fullscreen)
+
+    def toggle_controls(self) -> None:
+        """Manually toggle the control bar visibility using animation."""
+        if not self._controls_hidden:
+            # Cache the current height before we shrink it to 0
+            self._control_height = self._control.height()
+            self._animation.stop()
+            self._animation.setStartValue(self._control_height)
+            self._animation.setEndValue(0)
+            self._animation.start()
+            self._controls_hidden = True
+            self._toggle_btn.setIcon(self._icon_show)
+            self._toggle_btn.setToolTip("Show Controls")
+        else:
+            self._animation.stop()
+            self._animation.setStartValue(self._control.height())
+            # Use the cached height or a fallback of 54
+            target_h = getattr(self, "_control_height", 54)
+            self._animation.setEndValue(target_h if target_h > 0 else 54)
+            self._animation.start()
+            self._controls_hidden = False
+            self._toggle_btn.setIcon(self._icon_hide)
+            self._toggle_btn.setToolTip("Hide Controls")
 
     def _exit_fullscreen(self) -> None:
         """Leave fullscreen mode if currently active (Esc handler)."""

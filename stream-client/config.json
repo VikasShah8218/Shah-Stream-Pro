@@ -1,0 +1,8 @@
+{
+  "server_url": "wss://shah-stream-sync-server.onrender.com/",
+  "default_room": "lobby",
+  "client_name": "guest",
+  "auto_connect": true,
+  "log_level": "INFO",
+  "log_to_file": true
+}

@@ -2,22 +2,12 @@
 from __future__ import annotations
 
 import logging
-import os
+import sys
+import json
 from dataclasses import dataclass
 from pathlib import Path
 
-from dotenv import load_dotenv
-
 logger = logging.getLogger(__name__)
-
-# Tokens that parse to a boolean True value (case-insensitive).
-_TRUE_VALUES: frozenset[str] = frozenset({"true", "1", "yes", "on"})
-
-
-def _parse_bool(value: str) -> bool:
-    """Parse a truthy string token (true/1/yes/on -> True) case-insensitively."""
-    return value.strip().lower() in _TRUE_VALUES
-
 
 @dataclass
 class Settings:
@@ -31,26 +21,41 @@ class Settings:
     log_to_file: bool
 
 
-def load_settings(env_path: str | None = None) -> Settings:
-    """Load settings from environment variables, optionally seeding from a .env file.
+def load_settings(config_path: str | None = None) -> Settings:
+    """Load settings from a JSON config file.
 
-    If ``env_path`` is given, that file is loaded. Otherwise the project-root
-    ``.env`` is loaded when present; a missing file is not an error.
+    If ``config_path`` is given, that file is loaded. Otherwise the project-root
+    ``config.json`` is loaded. A missing file or missing keys will raise an error.
     """
-    if env_path is not None:
-        load_dotenv(env_path)
-    else:
-        # settings.py -> config -> stream-client -> <project root>
-        root_env = Path(__file__).resolve().parents[2] / ".env"
-        load_dotenv(root_env if root_env.exists() else None)
+    if config_path is None:
+        if getattr(sys, "frozen", False):
+            # Running as compiled PyInstaller executable
+            base_dir = Path(sys.executable).parent
+        else:
+            # Running from source (settings.py -> config -> stream-client)
+            base_dir = Path(__file__).resolve().parents[1]
+        
+        config_path = str(base_dir / "config.json")
 
-    settings = Settings(
-        server_url=os.getenv("SHAH_SERVER_URL", "ws://localhost:8765"),
-        default_room=os.getenv("SHAH_DEFAULT_ROOM", "lobby"),
-        client_name=os.getenv("SHAH_CLIENT_NAME", "guest"),
-        auto_connect=_parse_bool(os.getenv("SHAH_AUTO_CONNECT", "false")),
-        log_level=os.getenv("SHAH_LOG_LEVEL", "INFO"),
-        log_to_file=_parse_bool(os.getenv("SHAH_LOG_TO_FILE", "true")),
-    )
+    try:
+        with open(config_path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except FileNotFoundError:
+        raise FileNotFoundError(f"Configuration file not found: {config_path}")
+    except json.JSONDecodeError as e:
+        raise ValueError(f"Invalid JSON in config file {config_path}: {e}")
+
+    try:
+        settings = Settings(
+            server_url=data["server_url"],
+            default_room=data["default_room"],
+            client_name=data["client_name"],
+            auto_connect=bool(data["auto_connect"]),
+            log_level=data["log_level"],
+            log_to_file=bool(data["log_to_file"]),
+        )
+    except KeyError as e:
+        raise KeyError(f"Missing required configuration key in {config_path}: {e}")
+
     logger.debug("Loaded settings: %s", settings)
     return settings
